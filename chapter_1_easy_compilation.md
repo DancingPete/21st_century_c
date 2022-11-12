@@ -122,9 +122,54 @@ the `f` environment variable.
    publish:
      scp $(f).pdf $(Blogserver)
 
-
 # Using Libraries from Source
 
+A typical workflow for compiling libraries made available by other is the 
+following:
+
+# Download the zip archive file containing the complete library project
+# Unzip and unarchive the package
+# Configure the compilation for your machine
+# Compile the library via make
+# Install the files via make
+
+For example, the GNU scientific library may be acquired for use in one's own
+program as follows:
+
+    wget ftp://ftp.gnu.org/gnu/gsl/gsl-1.16.tar.gz
+    tar -xvzf gsl*gz
+    cd gsl-1.16
+    make 
+    sudo make install
+
+In the event that superuser privileges are unavailable, the `.configure` flag
+`-prefix=$HOME/<path_to_desired_install_location>` may be used to install
+the package within the user home directory.
 
 # Compiling C Programs via Here Document
 
+Here Documents are a command line pattern based on POSIX-standard shells
+that allow a convenient approach to compiling and then running minimal 
+C programs for testing.
+
+For C, or any other language sending standard input to a command expecting it
+may be sent using the pattern `program - << 'string'`, such that anything typed
+subsequently, until the same `string` is submitted will be run as though it is
+a file.
+
+For example:
+
+    python - << 'EOF'
+    print("Oh no! C as a REPL! How wonderful!")
+    'EOF'
+
+Pivotal here is the use of `-` to indicate that STDIN should be used as input
+rather than a file name.
+
+Given this standard it is possible to set environment variables such that 
+the text submitted to the program as a file is submitted to a shell alias,
+and compiled directly. For example:
+
+    go_libs="-lm"
+    go_flags="-g -Wall -include allheads.h -03"
+    alias go_c="c99 -xc - $go_libs $go_flags"
